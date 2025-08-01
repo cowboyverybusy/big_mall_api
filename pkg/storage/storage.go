@@ -1,20 +1,20 @@
-package service
+package storage
 
 import (
 	"big_mall_api/configs"
-	"big_mall_api/pkg/mysql"
-	"big_mall_api/pkg/redis"
+	"big_mall_api/pkg/storage/mysql"
+	"big_mall_api/pkg/storage/redis"
 	"fmt"
 	"sync"
 )
 
-type StorageManager struct {
+type DbManager struct {
 	redisMgr sync.Map
 	mysqlMgr sync.Map
 }
 
-func NewStorageManager(cfg *configs.Config) (*StorageManager, error) {
-	storage := &StorageManager{}
+func NewStorageManager(cfg *configs.Config) (*DbManager, error) {
+	storage := &DbManager{}
 	// 初始化 MySQL 客户端
 	for name, config := range cfg.MySQL {
 		client, err := mysql.NewClient(&config)
@@ -34,7 +34,7 @@ func NewStorageManager(cfg *configs.Config) (*StorageManager, error) {
 }
 
 // GetMySQLClient 根据名字获取 MySQL 客户端
-func (sm *StorageManager) GetMySQLClient(name string) (*mysql.Client, bool) {
+func (sm *DbManager) GetMySQLClient(name string) (*mysql.Client, bool) {
 	val, ok := sm.mysqlMgr.Load(name)
 	if !ok {
 		return nil, false
@@ -44,12 +44,12 @@ func (sm *StorageManager) GetMySQLClient(name string) (*mysql.Client, bool) {
 }
 
 // AddOrUpdateMySQLClient 添加或替换一个 MySQL 客户端
-func (sm *StorageManager) AddOrUpdateMySQLClient(name string, client *mysql.Client) {
+func (sm *DbManager) AddOrUpdateMySQLClient(name string, client *mysql.Client) {
 	sm.mysqlMgr.Store(name, client)
 }
 
 // GetRedisClient 根据名字获取 Redis 客户端
-func (sm *StorageManager) GetRedisClient(name string) (*redis.Client, bool) {
+func (sm *DbManager) GetRedisClient(name string) (*redis.Client, bool) {
 	val, ok := sm.redisMgr.Load(name)
 	if !ok {
 		return nil, false
@@ -59,6 +59,6 @@ func (sm *StorageManager) GetRedisClient(name string) (*redis.Client, bool) {
 }
 
 // AddOrUpdateRedisClient 添加或替换一个 Redis 客户端
-func (sm *StorageManager) AddOrUpdateRedisClient(name string, client *redis.Client) {
+func (sm *DbManager) AddOrUpdateRedisClient(name string, client *redis.Client) {
 	sm.redisMgr.Store(name, client)
 }

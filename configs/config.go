@@ -49,10 +49,10 @@ type LogConfig struct {
 	FilePrefix string `yaml:"file_prefix"` // 日志文件名前缀(当output为file时)
 }
 
-func LoadConfig() (*Config, error) {
+func LoadConfig(path string) (*Config, error) {
 	cfg := &Config{}
 
-	file, err := os.Open("configs/config.yaml")
+	file, err := os.Open(path)
 	if err != nil {
 		return nil, err
 	}

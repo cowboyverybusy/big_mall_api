@@ -2,23 +2,23 @@ package service
 
 import (
 	"big_mall_api/configs"
-	"big_mall_api/internal/logic"
 	"big_mall_api/internal/transport/handler"
 	"big_mall_api/internal/transport/middleware"
+	"big_mall_api/pkg/storage"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
 
 type MallServer struct {
 	engine         *gin.Engine
-	storageManager *StorageManager
+	storageManager *storage.DbManager
 	cfg            *configs.Config
 	logger         *logrus.Logger
 	handlers       *handler.MallServerHandler
-	logics         *logic.ServerLogic
+	//logics         *logic.ServerLogic
 }
 
-func NewMallServer(cfg *configs.Config, storageMgr *StorageManager, logics *logic.ServerLogic, logger *logrus.Logger) *MallServer {
+func NewMallServer(cfg *configs.Config, storageMgr *storage.DbManager, logger *logrus.Logger) *MallServer {
 	gin.SetMode(cfg.Server.Mode)
 	engine := gin.New()
 
@@ -27,7 +27,7 @@ func NewMallServer(cfg *configs.Config, storageMgr *StorageManager, logics *logi
 		storageManager: storageMgr,
 		cfg:            cfg,
 		logger:         logger,
-		logics:         logics,
+		//logics:         logics,
 	}
 }
 
@@ -76,7 +76,7 @@ func (s *MallServer) setupRoutes() {
 }
 
 func (s *MallServer) registerHandle() {
-	s.handlers = handler.NewMallServerHandler(s.logics)
+	s.handlers = handler.NewMallServerHandler(s.storageManager)
 }
 
 func (s *MallServer) Run() error {

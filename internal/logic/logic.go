@@ -1,23 +1,23 @@
 package logic
 
 import (
-	"big_mall_api/internal/service"
-	"big_mall_api/pkg/mysql"
-	"big_mall_api/pkg/redis"
+	"big_mall_api/pkg/storage"
+	"big_mall_api/pkg/storage/mysql"
+	"big_mall_api/pkg/storage/redis"
 )
 
 type ServerLogic struct {
-	storage *service.StorageManager
-	//mallServer *service.MallServer
+	dbMgr   *storage.DbManager
 	mainMdb *mysql.Client
 	mainRdb *redis.Client
+	//后续可以添加多个mysql、redis
 }
 
-func NewServerLogic(storage *service.StorageManager) *ServerLogic {
-	mainMbb, _ := storage.GetMySQLClient("main")
-	mainRdb, _ := storage.GetRedisClient("main")
+func NewServerLogic(dbMgr *storage.DbManager) *ServerLogic {
+	mainMbb, _ := dbMgr.GetMySQLClient("main")
+	mainRdb, _ := dbMgr.GetRedisClient("main")
 	return &ServerLogic{
-		storage: storage,
+		dbMgr:   dbMgr,
 		mainMdb: mainMbb,
 		mainRdb: mainRdb,
 	}

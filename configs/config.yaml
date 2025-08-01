@@ -1,5 +1,5 @@
 server:
-  port: "8080"
+  port: "9527"
   mode: "debug"
 
 mysql:
@@ -7,14 +7,14 @@ mysql:
     host: "localhost"
     port: "3306"
     user: "root"
-    password: "password"
-    database: "test_db"
-  analytics:
-    host: "localhost"
-    port: "3307"
-    user: "analytics"
-    password: "password"
-    database: "analytics_db"
+    password: "root"
+    database: "cowboy_mall"
+#  analytics:
+#    host: "localhost"
+#    port: "3307"
+#    user: "analytics"
+#    password: "password"
+#    database: "analytics_db"
 
 redis:
   main:
@@ -22,17 +22,17 @@ redis:
     port: "6379"
     password: ""
     db: 0
-  cache:
-    host: "localhost"
-    port: "6380"
-    password: ""
-    db: 1
+#  cache:
+#    host: "localhost"
+#    port: "6380"
+#    password: ""
+#    db: 1
 
-elasticsearch:
-  host: "localhost"
-  port: "9200"
-  username: "elastic"
-  password: "password"
+#elasticsearch:
+#  host: "localhost"
+#  port: "9200"
+#  username: "elastic"
+#  password: "password"
 
 log:
   output: "stdout" #输出位置: stdout, stderr, file。默认为stdout
