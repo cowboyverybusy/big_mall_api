@@ -76,13 +76,4 @@ var (
 		},
 		[]string{"type"},
 	)
-
-	CPUUsage = promauto.NewGauge(
-		prometheus.GaugeOpts{
-			Namespace: "big_mall",
-			Subsystem: "system",
-			Name:      "cpu_usage_percent",
-			Help:      "CPU usage percentage",
-		},
-	)
 )

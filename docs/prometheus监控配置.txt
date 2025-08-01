@@ -12,3 +12,46 @@ Grafana 仪表板:
 HTTP请求率: rate(http_requests_total[1m])
 请求延迟: histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[1m])) by (le))
 错误率: sum(rate(http_requests_total{status_code=~"5.."}[1m])) / sum(rate(http_requests_total[1m]))
+
+
+
+【通过http_requests_total查看qps】
+
+1、基础 QPS 查询
+rate(big_mall_http_http_requests_total[1m])
+这会显示所有请求的每秒速率
+[1m] 表示基于 1 分钟时间窗口计算（建议不小于抓取间隔的 2-4 倍）
+
+2. 按维度分解的 QPS
+# 按接口(endpoint)分组
+sum by (endpoint)(rate(big_mall_http_http_requests_total[1m]))
+
+# 按方法和状态码分组
+sum by (method, status_code)(rate(big_mall_http_http_requests_total[1m]))
+
+# 过滤特定接口（如/user/list）
+rate(big_mall_http_http_requests_total{endpoint="/user/list"}[1m])
+
+
+核心PromQL语句
+# 总QPS
+sum(rate(big_mall_http_requests_total[5m]))
+
+# 成功QPS
+sum(rate(big_mall_http_requests_total{status_code=~"2.."}[5m]))
+
+# 错误QPS
+sum(rate(big_mall_http_requests_total{status_code=~"[45].."}[5m]))
+
+# 接口QPS排行
+topk(10, sum by (endpoint) (rate(big_mall_http_requests_total[5m])))
+
+# 错误率
+sum(rate(big_mall_http_requests_total{status_code=~"[45].."}[5m])) /
+sum(rate(big_mall_http_requests_total[5m])) * 100
+
+
+时间窗口选择：
+实时监控: [1m]
+平滑显示: [5m] (推荐)
+趋势分析: [15m]

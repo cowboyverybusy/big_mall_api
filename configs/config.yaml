@@ -45,4 +45,4 @@ prometheus:
   enabled: true
   port: "9528"
   metric_path: "/prom/metrics"
-  namespace: "big_mall_pai"
+  namespace: "big_mall_api"
