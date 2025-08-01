@@ -7,11 +7,12 @@ import (
 )
 
 type Config struct {
-	Server ServerConfig           `yaml:"server"`
-	MySQL  map[string]MySQLConfig `yaml:"mysql"`
-	Redis  map[string]RedisConfig `yaml:"redis"`
-	ES     ESConfig               `yaml:"elasticsearch"`
-	Log    LogConfig              `yaml:"log"`
+	Server     ServerConfig           `yaml:"server"`
+	MySQL      map[string]MySQLConfig `yaml:"mysql"`
+	Redis      map[string]RedisConfig `yaml:"redis"`
+	ES         ESConfig               `yaml:"elasticsearch"`
+	Log        LogConfig              `yaml:"log"`
+	Prometheus PrometheusConfig       `yaml:"prometheus"`
 }
 
 type ServerConfig struct {
@@ -47,6 +48,13 @@ type LogConfig struct {
 	Output     string `yaml:"output"`      // 输出位置: stdout, stderr, file
 	Dir        string `yaml:"dir"`         // 日志文件目录 (当output为file时)
 	FilePrefix string `yaml:"file_prefix"` // 日志文件名前缀(当output为file时)
+}
+
+type PrometheusConfig struct {
+	Port       string `yaml:"port"`
+	Enabled    bool   `yaml:"enabled"`
+	MetricPath string `yaml:"metric_path"`
+	Namespace  string `yaml:"namespace"`
 }
 
 func LoadConfig(path string) (*Config, error) {

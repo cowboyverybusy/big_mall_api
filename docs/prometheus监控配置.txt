@@ -1,0 +1,14 @@
+Prometheus 配置示例:
+scrape_configs:
+  - job_name: 'mall_api'
+    scrape_interval: 15s
+    metrics_path: /prom/metrics   #默认是metrics。我自定义为/prom/metrics
+    static_configs:
+      - targets: ['your_server_ip:metrics_port']
+      # docker环境设置为 - targets: ['host.docker.internal:9528']
+
+Grafana 仪表板:
+使用以下指标创建监控面板:
+HTTP请求率: rate(http_requests_total[1m])
+请求延迟: histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[1m])) by (le))
+错误率: sum(rate(http_requests_total{status_code=~"5.."}[1m])) / sum(rate(http_requests_total[1m]))

@@ -6,8 +6,6 @@ import (
 )
 
 func (s *MallServer) setupApiRoutes() {
-	//s.engine.Use(middleware.LoggingMiddleware())  //记录完整请求（包括后续中间件的耗时）
-	//s.engine.Use(middleware.RecoveryMiddleware()) // Panic恢复应在最靠近业务的地方
 	s.SetupAuthAPIRoutes()
 	s.SetupPublicAPIRoutes()
 }

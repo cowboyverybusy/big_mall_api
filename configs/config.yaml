@@ -40,3 +40,9 @@ log:
   format: "json"
   dir: "logs" #日志文件路径 (当output为file时)
   file_prefix: "consumer" #日志文件名前缀(当output为file时)
+
+prometheus:
+  enabled: true
+  port: "9528"
+  metric_path: "/prom/metrics"
+  namespace: "big_mall_pai"
