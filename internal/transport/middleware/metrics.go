@@ -9,6 +9,7 @@ import (
 
 func PrometheusMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		println("==== come in PrometheusMiddleware ====")
 		start := time.Now()
 
 		c.Next()

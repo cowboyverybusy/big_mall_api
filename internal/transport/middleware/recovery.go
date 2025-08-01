@@ -8,6 +8,7 @@ import (
 
 func RecoveryMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		println("==== come in RecoveryMiddleware ====")
 		defer func() {
 			if err := recover(); err != nil {
 				logger.Error("Panic recovered", "error", err)

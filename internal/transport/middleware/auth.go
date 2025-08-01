@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"big_mall_api/internal/utils"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"strings"
 )
@@ -9,6 +10,7 @@ import (
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token := c.GetHeader("Authorization")
+		fmt.Printf("======= token:%+v\n", token)
 		if token == "" {
 			utils.ErrorResponse(c, 401, "Authorization header required", nil)
 			c.Abort()
