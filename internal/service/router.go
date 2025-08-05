@@ -15,7 +15,7 @@ func (s *MallServer) SetupAuthAPIRoutes() {
 	// 创建API组并应用认证中间件
 	authApi := s.engine.Group("/api")
 
-	authApi.Use(middleware.AuthMiddleware())    // 先应用授权中间件
+	//authApi.Use(middleware.AuthMiddleware())    // 先应用授权中间件
 	authApi.Use(middleware.LoggingMiddleware()) //认证通过后再记录日志
 
 	// 用户相关路由
@@ -66,4 +66,5 @@ func (s *MallServer) setupMiddleware() {
 	s.engine.Use(middleware.PrometheusMiddleware())
 	s.engine.Use(middleware.CORSMiddleware())
 	s.engine.Use(middleware.RecoveryMiddleware()) // Panic恢复应在最靠近业务的地方
+	//s.engine.Use(gin.Recovery()) // gin自带recovery中间件
 }

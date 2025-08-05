@@ -45,6 +45,9 @@ func (s *MallServer) Run() error {
 	s.sysMetricsCollector.Start()
 	defer s.sysMetricsCollector.Stop()
 
+	// 设置handler(在路由设置之前先执行这个)
+	s.registerHandle()
+
 	// 启动Prometheus指标服务器
 	s.startMetricsServer()
 
@@ -53,9 +56,6 @@ func (s *MallServer) Run() error {
 
 	// 设置路由
 	s.setupApiRoutes()
-
-	// 设置handler
-	s.registerHandle()
 
 	// 启动服务器
 	return s.engine.Run(":" + s.cfg.Server.Port)

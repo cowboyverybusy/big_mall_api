@@ -1,6 +1,7 @@
 package model
 
 import (
+	"big_mall_api/pkg/storage/mysql/container"
 	"gorm.io/gorm"
 	"time"
 )
@@ -16,6 +17,18 @@ type User struct {
 	UpdatedAt time.Time      `json:"updated_at"`
 	DeletedAt gorm.DeletedAt `json:"-" gorm:"index"`
 }
+
+// TableName 实现Model接口
+func (User) TableName() string {
+	return "users"
+}
+
+func (User) DbName() string {
+	return "main" // 指定这个模型使用的数据库配置名称
+}
+
+// 确保User实现了Model接口
+var _ container.Model = (*User)(nil)
 
 type CreateUserRequest struct {
 	Username string `json:"username" binding:"required"`

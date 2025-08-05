@@ -2,6 +2,7 @@ package main
 
 import (
 	"big_mall_api/configs"
+	"big_mall_api/internal/model"
 	"big_mall_api/internal/service"
 	"big_mall_api/internal/utils/logger"
 	"big_mall_api/pkg/storage"
@@ -22,7 +23,7 @@ func main() {
 	}
 
 	// 初始化存储系统（MySQL、redis）
-	storageMgr, err := storage.NewStorageManager(cfg)
+	storageMgr, err := storage.NewStorageManager(cfg, model.GetContainerModelList())
 	if err != nil {
 		log.Fatalf("Failed to init storageMannager: %v", err)
 	}

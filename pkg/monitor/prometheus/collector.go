@@ -31,7 +31,7 @@ func (sc *SystemMetricCollector) Start() {
 			case <-sc.ctx.Done():
 				return
 			case <-ticker.C:
-				log.Println("采集一次数据")
+				//log.Println("采集一次数据")
 				sc.collectMetrics()
 			}
 		}

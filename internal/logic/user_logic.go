@@ -21,7 +21,7 @@ func (s *ServerLogic) CreateUser(ctx context.Context, req *model.CreateUserReque
 	}
 
 	// 保存到数据库
-	err := s.mainMdb.DB.WithContext(ctx).Save(user).Error
+	err := s.mainMdb.WithContext(ctx).Save(user).Error
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +42,7 @@ func (s *ServerLogic) GetUser(ctx context.Context, id uint) (*model.UserResponse
 	}
 
 	// 从数据库获取
-	err = s.mainMdb.DB.WithContext(ctx).First(&user, id).Error
+	err = s.mainMdb.WithContext(ctx).First(&user, id).Error
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +57,7 @@ func (s *ServerLogic) GetUser(ctx context.Context, id uint) (*model.UserResponse
 }
 
 func (s *ServerLogic) DeleteUser(ctx context.Context, id uint) error {
-	if err := s.mainMdb.DB.WithContext(ctx).Delete(id).Error; err != nil {
+	if err := s.mainMdb.WithContext(ctx).Delete(id).Error; err != nil {
 		return err
 	}
 
@@ -73,7 +73,7 @@ func (s *ServerLogic) DeleteUser(ctx context.Context, id uint) error {
 func (s *ServerLogic) ListUsers(ctx context.Context, page, pageSize int) ([]*model.UserResponse, error) {
 	offset := (page - 1) * pageSize
 	var users []*model.User
-	err := s.mainMdb.DB.WithContext(ctx).Offset(offset).Limit(pageSize).Find(&users).Error
+	err := s.mainMdb.WithContext(ctx).Offset(offset).Limit(pageSize).Find(&users).Error
 	if err != nil {
 		return nil, err
 	}
