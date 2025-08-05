@@ -17,16 +17,6 @@ type DbManager struct {
 }
 
 func NewStorageManager(cfg *configs.Config, models []container.Model) (*DbManager, error) {
-	//storage := &DbManager{}
-	// 初始化 MySQL 客户端
-	//for name, config := range cfg.MySQL {
-	//	client, err := mysql.NewClient(&config)
-	//	if err != nil {
-	//		return nil, fmt.Errorf("failed to connect to MySQL [%s]: %v", name, err)
-	//	}
-	//	storage.mysqlMgr.Store(name, client)
-	//}
-
 	// 初始化所有数据库连接
 	dbMap := make(map[string]*gorm.DB)
 	for name, dbCfg := range cfg.MySQL {

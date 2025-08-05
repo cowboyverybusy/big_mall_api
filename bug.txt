@@ -1,0 +1,60 @@
+【每隔一段时间，会提示MySQL断开连接】
+[mysql] 2025/08/05 16:06:48 connection.go:49: read tcp [::1]:49958->[::1]:3306: wsarecv: An established connection was aborted by the software in your host machine
+[mysql] 2025/08/05 16:36:22 connection.go:49: bad connection
+
+解决方案：
+这个MySQL连接断开的问题通常是由于数据库连接池配置不当导致的。主要原因包括：
+连接超时：MySQL服务器会自动关闭空闲时间过长的连接
+连接池配置缺失：GORM默认的连接池配置可能不适合长时间运行的应用，需要配置MySQL服务的wait_timeout来灵活设置连接池。
+
+
+>> 查看一下MySQL相关的配置：
+
+-- 查看全局 wait_timeout
+SHOW GLOBAL VARIABLES LIKE 'wait_timeout';
+
+-- 查看全局 interactive_timeout
+SHOW GLOBAL VARIABLES LIKE 'interactive_timeout';
+
+
+通过对MySQL进行查询，发现wait_timeout为120，interactive_timeout也为120.
+
+发现问题了！你的MySQL服务器的超时配置非常短，只有120秒（2分钟）。这就是导致连接频繁断开的根本原因。
+问题分析
+
+wait_timeout = 120秒：非交互式连接（如应用程序连接）空闲超过2分钟就会被断开
+interactive_timeout = 120秒：交互式连接空闲超过2分钟就会被断开
+
+这个配置对于长时间运行的应用程序来说太短了。如果不改wait_timeout。那么就修改连接池的设置：
+
+// 针对MySQL wait_timeout为120秒超时的配置
+sqlDB.SetMaxIdleConns(5)                   // 减少空闲连接数，根据并发量调整
+sqlDB.SetMaxOpenConns(50)                  // 适中的最大连接数，根据并发量调整
+sqlDB.SetConnMaxLifetime(90 * time.Second) // 90秒，ConnMaxLifetime 必须 小于 MySQL 的 wait_timeout
+sqlDB.SetConnMaxIdleTime(60 * time.Second) // 60秒空闲时间 建议 <= ConnMaxLifetime
+
+
+另外一种解决方案就是设置更长的wait_timeout时间。
+永久修改（需要重启MySQL）：
+在MySQL配置文件中添加：
+[mysqld]
+wait_timeout = 28800
+interactive_timeout = 28800
+
+// 配置连接池
+sqlDB.SetMaxIdleConns(10)           // 设置空闲连接池中连接的最大数量
+sqlDB.SetMaxOpenConns(100)          // 设置打开数据库连接的最大数量
+sqlDB.SetConnMaxLifetime(time.Hour) // 设置了连接可复用的最大时间
+sqlDB.SetConnMaxIdleTime(10 * time.Minute) // 设置连接空闲的最大时间
+
+
+项目代码中可以通过配置，更加灵活设置连接池
+waitTimeout := dbCfg.WaitTimeout
+if waitTimeout == 0 {
+    waitTimeout = 280 // 默认比MySQL常规配置300秒短
+}
+// 动态设置连接生命周期
+sqlDB.SetConnMaxLifetime(time.Duration(waitTimeout) * time.Second)
+sqlDB.SetConnMaxIdleTime(time.Duration(waitTimeout/2) * time.Second)
+sqlDB.SetMaxIdleConns(dbCfg.MaxIdleConns)
+sqlDB.SetMaxOpenConns(dbCfg.MaxOpenConns)
